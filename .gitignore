@@ -3,3 +3,4 @@ data
 .swp
 node_modules
 web/static/assets/
+secret.*
