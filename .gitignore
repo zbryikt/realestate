@@ -1,0 +1,5 @@
+data
+.*.swp
+.swp
+node_modules
+web/static/assets/

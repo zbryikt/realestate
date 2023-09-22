@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    +css([
+      {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
+      {name: "@loadingio/bootstrap.ext"}
+    ])
+    style(type="text/css"): include:stylus index.styl
+  body
+    .w-1024.rwd.mx-auto.my-4
+      .input-group
+        input.form-control(ld="addr")
+        .input-group-append: .btn.btn-outline-secondary.border(ld="filter") 過濾
+      .my-5: hr
+      .items
+        .item.head
+          .date 交易日
+          .total 總價
+          .unit 單價
+          .floor 樓層
+          .total-floor 樓高
+          .main-area 主建物
+          .sec-area 附建物
+          .balcony 陽台
+          .addr 地址
+        .item(ld-each="item")
+          .date(ld="date")
+          .total(ld="total")
+          .unit(ld="unit")
+          .floor(ld="floor")
+          .total-floor(ld="total-floor")
+          .main-area(ld="main-area")
+          .sec-area(ld="sec-area")
+          .balcony(ld="balcony")
+          .addr.text-truncate(ld="addr")
+    +script([
+      {name: "proxise"},
+      {name: "@loadingio/debounce.js"},
+      {name: "@loadingio/ldquery"},
+      {name: "ldview"},
+      {name: "ldcover"},
+    ])
+    script(type="module"): include:lsc index.ls

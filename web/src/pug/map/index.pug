@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    +css([
+      {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
+      {name: "@loadingio/bootstrap.ext"},
+      {name: "ldcover"}
+    ])
+    style(type="text/css"): include:stylus index.styl
+  body
+    #map.w-100.h-100
+    .d-flex.charts
+      .p-2
+        .label.text-sm 屋齡分布
+        .chart(ld="chart",data-name="age")
+      .p-2
+        .label.text-sm 樓層分布
+        .chart(ld="chart",data-name="floor")
+      .p-2
+        .label.text-sm 交易距今(年)
+        .chart(ld="chart",data-name="timespan")
+      .p-2
+        .label.text-sm 單價
+        .chart(ld="chart",data-name="unitp")
+    .ldcv.scroll.autogap(ld="popup"): .w-640.rwd.base: .inner
+      .d-flex.g-2 #[div 地址]#[div(ld="addr")]
+      .d-flex.g-2 #[div 屋齡]#[div(ld="age")]
+      .d-flex.g-2 #[div 總價]#[div(ld="total-price")]
+      .d-flex.g-2 #[div 單價]#[div(ld="unit-price")]
+      .d-flex.g-2 #[div 樓層]#[div(ld="floor")]
+      .d-flex.g-2 #[div 主坪]#[div(ld="main-area")]
+      .d-flex.g-2 #[div 附坪]#[div(ld="sec-area")]
+      .d-flex.g-2 #[div 陽台]#[div(ld="balcony")]
+    +script([
+      {name: "proxise"},
+      {name: "@loadingio/debounce.js"},
+      {name: "@loadingio/ldquery"},
+      {name: "@plotdb/semver"},
+      {name: "@plotdb/rescope"},
+      {name: "@plotdb/csscope"},
+      {name: "@plotdb/block"},
+      {name: "ldview"},
+      {name: "ldcover"},
+      {name: "ldcolor"}
+    ])
+    script(type="module"): include:lsc index.ls
+    +script([{url: "https://maps.googleapis.com/maps/api/js?key=AIzaSyAHiR8D15Pie_D1Z2DmnYRvtpgIsQIQfsw&callback=init&v=weekly"}])
