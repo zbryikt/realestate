@@ -1,4 +1,5 @@
 <-(->it.apply {}) _
+(config) <~ ld$.fetch "/assets/data/secret.json", {method: \GET}, {type: \json} .then _
 obj = @
 @charts = {}
 @ldcv = {}
@@ -8,7 +9,12 @@ manager = new block.manager registry: ({url, name, path, version, type}) ->
   if name == \base => return "/assets/chart/base/0.0.1/index.html"
   if !path => path = if type == \js => \index.min.js else if type == \css => \index.min.css
   return "/assets/lib/#{name}/main/#{path}"
-init = proxise ~> if @inited => return Promise.resolve!
+init = proxise ~>
+  script = document.createElement \script
+  script.setAttribute \src, "https://maps.googleapis.com/maps/api/js?key=#{config.key}&callback=init&v=weekly"
+  document.body.appendChild script
+
+if @inited => return Promise.resolve!
 window.init = ~>
   @map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 25.11509, lng: 121.51525 }
