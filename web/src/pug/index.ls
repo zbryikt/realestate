@@ -1,6 +1,6 @@
 (list) <- ld$.fetch "/assets/data/all.json", {method: \GET}, {type: \json} .then _
-datefmt = -> "#{it.substring(0,3)}/#{it.substring(3,5)}/#{it.substring(5,7)}"
-area = -> (+it * 0.3025).toFixed(2)
+datefmt = -> it #"#{it.substring(0,3)}/#{it.substring(3,5)}/#{it.substring(5,7)}"
+area = -> if isNaN(it) => return '-' else (+it).toFixed(2) # (+it * 0.3025).toFixed(2)
 floor = ->
   ret = {
     "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, 
@@ -17,21 +17,56 @@ entries =
   addr: '實踐|尊賢|石牌|致遠二路'
   "total-floor": {min: 3, max: 5}
   floor: {min: 2, max: 4}
+  sorter: {f: \交易日, d: {"交易日": -1}}
+  range: {}
   get: ->
     if !@addr => return @all
     addr = (@addr or '').split('|')
-    return list.filter (entry) ~>
+    ret = list.filter (entry) ~>
       addr.filter((a) ~> ~entry["門牌"].indexOf(a)).length
-sort = (n, dir = 1) -> list.sort (a,b) -> dir * (if a[n] > b[n] => 1 else if a[n] < b[n] => -1 else 0)
-
-sort "交易日", -1
+    f = @sorter.f
+    if f =>
+      d = (@sorter.d[f] or 1)
+      ret.sort (a,b) ~>
+        a = a[f]
+        b = b[f]
+        if !(isNaN(a) or isNaN(b)) => [a,b] = [a,b].map -> +it
+        d * (if a > b => 1 else if a < b => -1 else 0)
+    for k,o of @range =>
+      if k == \建坪 => continue
+      ret = ret.filter (entry) ~>
+        v = entry[k]
+        return v >= o.from and v <= o.to
+    if o = @range["建坪"] =>
+      ret = ret.filter (entry) ~>
+        v = +entry["主建"] + +entry["附建"] + +entry["陽台"]
+        return v >= o.from and v <= o.to
+    return ret
 
 view = new ldview do
   root: document.body
-  action: click: filter: ->
-    entries.addr = view.get \addr .value
-    view.render \item
+  action: click:
+    sort: ({node}) ->
+      field-name = node.getAttribute \data-name
+      f = entries.sorter.f
+      entries.sorter.f = field-name
+      if !entries.sorter.d[field-name] => entries.sorter.d[field-name] = 1
+      if f == field-name =>
+        if !entries.sorter.d[f] => entries.sorter.d[f] = 1
+        else entries.sorter.d[f] = -entries.sorter.d[f]
+      view.render \item
+    filter: ->
+      entries.addr = view.get \addr .value
+      view.render \item
 
+  init:
+    slider: ({node}) ->
+      name = node.getAttribute \data-name
+      ldrs = new ldslider root: node, range: true
+      ldrs.on \change, debounce ->
+        entries.range{}[name] = it
+        console.log name, it
+        view.render \item
 
   handler:
     item:
@@ -47,3 +82,4 @@ view = new ldview do
           "sec-area": ({ctx}) -> area ctx["附建"]
           "balcony": ({ctx}) -> area ctx["陽台"]
           addr: ({ctx}) -> ctx["門牌"]
+          age: ({ctx}) -> ctx["屋齡"]

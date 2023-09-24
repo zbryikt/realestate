@@ -22,15 +22,16 @@ html
       .p-2
         .label.text-sm 單價
         .chart(ld="chart",data-name="unitp")
-    .ldcv.scroll.autogap(ld="popup"): .w-640.rwd.base: .inner
-      .d-flex.g-2 #[div 地址]#[div(ld="addr")]
-      .d-flex.g-2 #[div 屋齡]#[div(ld="age")]
-      .d-flex.g-2 #[div 總價]#[div(ld="total-price")]
-      .d-flex.g-2 #[div 單價]#[div(ld="unit-price")]
-      .d-flex.g-2 #[div 樓層]#[div(ld="floor")]
-      .d-flex.g-2 #[div 主坪]#[div(ld="main-area")]
-      .d-flex.g-2 #[div 附坪]#[div(ld="sec-area")]
-      .d-flex.g-2 #[div 陽台]#[div(ld="balcony")]
+    .ldcv.scroll.autogap(ld="popup"): .w-640.rwd.base: .inner.ldcv-popup
+      .d-flex.g-3 #[.label 成交日]#[.value(ld="deal-date")]
+      .d-flex.g-3 #[.label 地址]#[.value(ld="addr")]
+      .d-flex.g-3 #[.label 屋齡]#[.value(ld="age")]
+      .d-flex.g-3 #[.label 總價]#[.value(ld="total-price")]
+      .d-flex.g-3 #[.label 單價]#[.value(ld="unit-price")]
+      .d-flex.g-3 #[.label 樓層]#[.value(ld="floor")]
+      .d-flex.g-3 #[.label 主坪]#[.value(ld="main-area")]
+      .d-flex.g-3 #[.label 附坪]#[.value(ld="sec-area")]
+      .d-flex.g-3 #[.label 陽台]#[.value(ld="balcony")]
     +script([
       {name: "proxise"},
       {name: "@loadingio/debounce.js"},

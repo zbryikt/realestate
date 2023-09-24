@@ -3,30 +3,43 @@ html
   head
     +css([
       {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
-      {name: "@loadingio/bootstrap.ext"}
+      {name: "@loadingio/bootstrap.ext"},
+      {name: "ldslider"}
     ])
     style(type="text/css"): include:stylus index.styl
   body
     .w-1024.rwd.mx-auto.my-4
-      .input-group
+      .input-group.mb-3
         input.form-control(ld="addr")
         .input-group-append: .btn.btn-outline-secondary.border(ld="filter") 過濾
+      .d-flex.g-4
+        .flex-grow-1
+          .label 屋齡
+          .ldrs(ld="slider",data-name="屋齡")
+        .flex-grow-1
+          .label 樓層
+          .ldrs(ld="slider",data-name="樓層")
+        .flex-grow-1
+          .label 建坪
+          .ldrs(ld="slider",data-name="建坪")
       .my-5: hr
       .items
         .item.head
-          .date 交易日
-          .total 總價
-          .unit 單價
-          .floor 樓層
-          .total-floor 樓高
-          .main-area 主建物
-          .sec-area 附建物
-          .balcony 陽台
-          .addr 地址
+          .date(ld="sort",data-name="交易日") 交易日
+          .total(ld="sort",data-name="總價") 總價
+          .unit(ld="sort",data-name="單價") 單價
+          .age(ld="sort",data-name="屋齡") 屋齡
+          .floor(ld="sort",data-name="樓層") 樓層
+          .total-floor(ld="sort",data-name="總樓") 樓高
+          .main-area(ld="sort",data-name="主建") 主建物
+          .sec-area(ld="sort",data-name="附建") 附建物
+          .balcony(ld="sort",data-name="陽台") 陽台
+          .addr(ld="sort",data-name="地址") 地址
         .item(ld-each="item")
           .date(ld="date")
           .total(ld="total")
           .unit(ld="unit")
+          .age(ld="age")
           .floor(ld="floor")
           .total-floor(ld="total-floor")
           .main-area(ld="main-area")
@@ -39,5 +52,6 @@ html
       {name: "@loadingio/ldquery"},
       {name: "ldview"},
       {name: "ldcover"},
+      {name: "ldslider"}
     ])
     script(type="module"): include:lsc index.ls

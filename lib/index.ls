@@ -82,7 +82,7 @@ get = (opt = {}) ->
       d = pthk.join csvdir, it
       files = fs.readdir-sync d
         .filter(-> if opt.filter and opt.filter.city => opt.filter.city.exec(it) else true)
-        .filter(-> /_[ab]\./.exec(it))
+        .filter(-> /_[ab]\.csv/.exec(it))
         .map -> pthk.join(d, it)
         .map ->
           alllist ++= parse {name: it, filter: opt.filter}

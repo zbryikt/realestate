@@ -36,8 +36,6 @@ window.init = ~>
   @ldcv.popup.toggle!
   view.render \popup
 
-
-
 list = list
   .map ->
     it["門牌"] = it["門牌"].replace(/臺北市北投區/, '')
@@ -244,6 +242,7 @@ view = new ldview do
   handler:
     popup:
       text:
+        "deal-date":({node}) ~> @{}entry["交易日"]
         "addr": ({node}) ~> @{}entry["門牌"]
         "age":({node}) ~> @{}entry["屋齡"]
         "total-price":({node}) ~> @{}entry["總價"]
