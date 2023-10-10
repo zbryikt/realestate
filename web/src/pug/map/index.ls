@@ -270,6 +270,8 @@ view.init!
     google.maps.event.addListener @map, \bounds_changed, debounce ~>
       b = @map.getBounds!
       filter.bound = {}
-      filter.bound.lat = min: b.Ua.lo, max: b.Ua.hi
-      filter.bound.lng = min: b.Ia.lo, max: b.Ia.hi
+      lat = b.Ua or b.rb
+      lng = b.Ia or b.Ta
+      filter.bound.lat = min: lat.lo, max: lat.hi
+      filter.bound.lng = min: lng.lo, max: lng.hi
       filter.render!
