@@ -1,7 +1,11 @@
 <-(->it!) _
 require! <[pthk papaparse]>
 fs = require "fs-extra"
-require! <[./lib]>
+
+tooldir = fs.realpathSync pthk.dirname(__filename)
+root = pthk.join(tooldir, \..)
+
+lib = require pthk.join(root, "lib")
 
 console.log "load converted latlng..."
 ret1 = papaparse.parse fs.read-file-sync("data/paid/address-latlng1.csv").toString!
@@ -13,7 +17,7 @@ ret2.data.map -> converted[it.1] = true
 ret3.data.map -> converted[it.1] = true
 
 console.log "get list ..."
-list = lib.get filter: addr: \北投
+list = lib.get filter: addr: \士林
 
 console.log "prepare address list to be converted ..."
 hash = {}
