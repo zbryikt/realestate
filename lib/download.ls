@@ -20,7 +20,6 @@ list = [start.year to cur.year].map (y) -> [1 to 4].map (s) -> "#{y}S#{s}"
   .filter -> it < "#{cur.year}S#{cur.season}"
   .map -> {type: \season, key: it}
 
-list = []
 list-alt = []
 date = new Date!
 [year,month] = [date.getYear! + 1900, date.getMonth! + 1]
@@ -32,7 +31,6 @@ for i from -2 to 0 => for j in [1,11,21] =>
   list-alt.push "#{('' + y).padStart(4,'0')}#{('' + m).padStart(2,'0')}#{('' + j).padStart(2,'0')}"
 list ++= list-alt.map -> {type: \10day, key: it}
 
-
 url = (d) ->
   if d.type == \10day =>
     # 10day
@@ -43,13 +41,21 @@ url = (d) ->
 proc = (list) ->
   if !(list and list.length) => return Promise.resolve!
   item = list.splice(0, 1).0
-  console.log "fetching #{item.key} ..."
-  fetch url(item), {method: \GET}
-    .then (res) -> res.buffer!
-    .then ->
-      fs.ensure-dir-sync rawdir
-      fs.write-file-sync pthk.join(rawdir, "#{item.key}.zip"), it
-      debounce 2000 .then -> proc list
+  if fs.exists-sync pthk.join(rawdir, "#{item.key}.zip") =>
+    p = Promise.resolve!
+      .then -> console.log "fetching #{item.key} ... (skip) "
+  else
+    p = Promise.resolve!
+      .then ->
+        console.log "fetching #{item.key} ..."
+        fetch url(item), {method: \GET}
+      .then (res) -> res.buffer!
+      .then ->
+        fs.ensure-dir-sync rawdir
+        fs.write-file-sync pthk.join(rawdir, "#{item.key}.zip"), it
+      .then -> debounce 2000
+  p
+    .then -> proc list
     .catch ->
       console.error "failed to fetch #{item.key} . continue with delay ..."
       debounce 2000 .then -> proc list

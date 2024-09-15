@@ -1,8 +1,11 @@
 require! <[pthk]>
 fs = require "fs-extra"
-require! <[./lib]>
+
+tooldir = fs.realpathSync pthk.dirname(__filename)
+root = pthk.join(tooldir, \..)
+lib = require pthk.join(root, "lib")
 
 list = lib.get filter: addr: \北投
 
-fs.ensure-dir-sync "data/gen"
-fs.write-file-sync "data/gen/all.json", JSON.stringify(list)
+fs.ensure-dir-sync pthk.join(root, "data/gen")
+fs.write-file-sync pthk.join(root, "data/gen/all.json"), JSON.stringify(list)
