@@ -14,7 +14,7 @@ floor = ->
 
 entries =
   all: list
-  addr: '實踐|尊賢|石牌|致遠二路'
+  addr: '實踐|尊賢|石牌|致遠'
   "total-floor": {min: 3, max: 5}
   floor: {min: 2, max: 4}
   sorter: {f: \交易日, d: {"交易日": -1}}
@@ -43,6 +43,9 @@ entries =
         return v >= o.from and v <= o.to
     return ret
 
+list = entries.get!
+list.map (d,i) -> d.idx = i
+
 view = new ldview do
   root: document.body
   action: click:
@@ -70,7 +73,8 @@ view = new ldview do
 
   handler:
     item:
-      list: -> entries.get!
+      list: -> list
+      key: -> it.idx
       view:
         text:
           date: ({ctx}) -> datefmt ctx["交易日"]
