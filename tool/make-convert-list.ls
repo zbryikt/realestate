@@ -8,13 +8,12 @@ root = pthk.join(tooldir, \..)
 lib = require pthk.join(root, "lib")
 
 console.log "load converted latlng..."
-ret1 = papaparse.parse fs.read-file-sync(pthk.join(root,"data/paid/address-latlng1.csv")).toString!
-ret2 = papaparse.parse fs.read-file-sync(pthk.join(root,"data/paid/address-latlng2.csv")).toString!
-ret3 = papaparse.parse fs.read-file-sync(pthk.join(root,"data/paid/address-latlng3.csv")).toString!
 converted = {}
-ret1.data.map -> converted[it.1] = true
-ret2.data.map -> converted[it.1] = true
-ret3.data.map -> converted[it.1] = true
+
+fs.readdir-sync pthk.join(root, \data/paid)
+  .map -> pthk.join(root, \data/paid, it)
+  .map -> papaparse.parse fs.read-file-sync(it).toString!
+  .map (list) -> list.data.map -> converted[it.1] = true
 
 console.log "get list ..."
 list = lib.get filter: addr: \北投

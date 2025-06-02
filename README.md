@@ -1,8 +1,13 @@
 # 實價登錄解譯器
 
- - lib/index: 讀取 csv, 轉成列表
- - lib/download: 下載 zip (待整理)
- - lib/parse: 將 zip 轉成 csv
+ - lib/download: 下載 zip 到 data/raw (待整理)
+ - lib/parse: 將 data/raw 中的 zip 解開到 data/csv
+ - lib/index: 讀取 csv, 轉成列表 ( js module )
+
+工具程式:
+
+ - `tool/min.ls`: 將 geocoding 的地址整理到 web (check code)
+ - `tool/make-convert-list.ls`: 將尚未做 geocoding 的地址整理出來 (check code)
 
 
 ## 網址
