@@ -16,7 +16,7 @@ fs.readdir-sync pthk.join(root, \data/paid)
   .map (list) -> list.data.map -> converted[it.1] = true
 
 console.log "get list ..."
-list = lib.get filter: addr: \北投
+list = lib.get filter: addr: /北投區|士林區/
 
 console.log "prepare address list to be converted ..."
 hash = {}
