@@ -14,7 +14,7 @@
 
 下載位置: https://plvr.land.moi.gov.tw/DownloadOpenData#
 門牌批次 Geocoding: https://www.tgos.tw/tgos/Addr/Compare
- - 已申請過 API Key 的話, 別忘了翻翻 email (搜尋 `地理資訊圖資雲服務平台` )
+ - 需要 api key 。已申請過 API Key 的話, 可以在「我的申請紀錄」翻找，或翻翻 email (搜尋 `地理資訊圖資雲服務平台` )
 
 
 ## 規格
