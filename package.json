@@ -100,5 +100,8 @@
       "d3-timer",
       "d3-transition"
     ]
+  },
+  "devDependencies": {
+    "proj4": "^2.17.0"
   }
 }
