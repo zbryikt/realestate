@@ -41,7 +41,11 @@ parse = ({name, filter}) ->
   list = ret.data
     .filter ->
       if !(filter and filter.addr) => return true
-      ~((it['土地位置建物門牌'] or '').indexOf(filter.addr))
+      return if filter.addr instanceof RegExp =>
+        filter.addr.exec(it['土地位置建物門牌'] or '')
+      else if typeof(filter.addr) == \string =>
+        ~((it['土地位置建物門牌'] or '').indexOf(filter.addr))
+      else true
     .map ->
       it{
         '建築完成年月'
@@ -78,14 +82,15 @@ parse = ({name, filter}) ->
 get = (opt = {}) ->
   alllist = []
   dirs = fs.readdir-sync csvdir
-    .map ->
-      d = pthk.join csvdir, it
+    .map (basename) ->
+      d = pthk.join csvdir, basename
       files = fs.readdir-sync d
         .filter(-> if opt.filter and opt.filter.city => opt.filter.city.exec(it) else true)
         .filter(-> /_[ab]\.csv/.exec(it))
         .map -> pthk.join(d, it)
         .map ->
           alllist ++= parse {name: it, filter: opt.filter}
+          console.log basename, alllist.length
   return alllist
 
 module.exports =
