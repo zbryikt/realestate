@@ -20,7 +20,23 @@ html
         .label.text-sm 交易距今(年)
         .chart(ld="chart",data-name="timespan")
       .p-2
-        .label.text-sm 單價
+        .label.text-sm.d-flex.g-1.align-items-center(ld="pstat")
+          span 單價
+          .text-sm
+            span.text-sm.text-muted 低
+            span(ld="stat",data-name="q1")
+          .text-sm
+            span.text-sm.text-muted 中
+            span(ld="stat",data-name="q2")
+          .text-sm
+            span.text-sm.text-muted 高
+            span(ld="stat",data-name="q3")
+          .text-sm
+            span.text-sm.text-muted 均
+            span(ld="stat",data-name="avg")
+          .text-sm
+            span.text-sm.text-muted 差
+            span(ld="stat",data-name="stddev")
         .chart(ld="chart",data-name="unitp")
     .ldcv.scroll.autogap(ld="popup"): .w-640.rwd.base: .inner.ldcv-popup
       .d-flex.g-3 #[.label 成交日]#[.value(ld="deal-date")]

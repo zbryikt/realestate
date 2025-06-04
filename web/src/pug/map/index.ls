@@ -31,20 +31,27 @@ window.init = ~>
 (latlng) <~ ld$.fetch "/assets/data/latlng.json", {method: \GET}, {type: \json} .then _
 (list) <~ ld$.fetch "/assets/data/all.json", {method: \GET}, {type: \json} .then _
 
+console.log list
 @show-entry = (m) ->
   @entry = m.data
   @ldcv.popup.toggle!
   view.render \popup
 
+console.log "input count: ", list.length
 list = list
   .map ->
-    it["門牌"] = it["門牌"].replace(/臺北市北投區/, '')
+    #it["門牌"] = it["門牌"].replace(/臺北市北投區/, '')
+    it["門牌"] = it["門牌"].replace(/臺北市/, '')
     ll = latlng[it["門牌"]]
     if ll => it.latlng = {lat: ll.1, lng: ll.0}
     it["整單價"] = Math.round(it["單價"])
     it
   .filter -> it.latlng
   .filter -> it["整單價"] > 10
+
+console.log "filtered count: ", list.length
+list.map ->
+  if /北投/.exec(it["門牌"]) => console.log it.latlng
 
 gettimespan = (n) ->
   [y,m] = n.split(\/).map -> +it
@@ -64,15 +71,43 @@ list.map ->
     if y > 10 => y = "10+"
   timespan[y] = (timespan[y] or 0) + 1
 
+quartile = (arr, q) ->
+  a = arr.slice!sort (a, b) -> a - b
+  pos = (a.length - 1) * q
+  base = Math.floor pos
+  rest = pos - base
+  if a[base + 1]?
+    a[base] + rest * (a[base + 1] - a[base])
+  else
+    a[base]
+
+stddev = (arr) ->
+  avg = arr.reduce(((sum, val) -> sum + val), 0) / arr.length
+  Math.sqrt arr.reduce(((sum, val) -> sum + (val - avg) ** 2), 0) / arr.length
+
+average = (arr) ->
+  arr.reduce(((sum, val) -> sum + val), 0) / arr.length
+
+
+pstat = {}
 unitp = {}
 get-unitp = (list) ->
   unitp := {}
+  all = []
   list.map ->
     p = Math.round(it["單價"])
+    all.push p
+    it["整單價"] = p
+    p = Math.floor(p / 5) * 5
     if p > 110 => p = "110+"
     unitp[p] = (unitp[p] or 0) + 1
-    it["整單價"] = p
-
+  pstat <<<
+    q1: Math.round(quartile all, 0.25)
+    q2: Math.round(quartile all, 0.5)
+    q3: Math.round(quartile all, 0.75)
+    stddev: Math.round(stddev all)
+    avg: Math.round(average all)
+  view.render \pstat
 
 age = {}
 list.map ->
@@ -139,7 +174,6 @@ filter =
       if d.latlng.lat >= @bound.{}lat.min and d.latlng.lat <= @bound.{}lat.max and
       d.latlng.lng >= @bound.{}lng.min and d.latlng.lng <= @bound.{}lng.max =>
         vp.push d
-
     get-unitp(vp)
     raw = [{size: v, name: k} for k,v of unitp]
     obj.charts["unitp"].set-raw raw: raw, binding: {size: {key: \size}, name: {key: \name}}
@@ -240,6 +274,9 @@ view = new ldview do
   init:
     chart: ({node}) -> makechart[node.getAttribute(\data-name)]({node})
   handler:
+    pstat:
+      text: stat: ({node}) -> pstat[node.dataset.name] or '0'
+
     popup:
       text:
         "deal-date":({node}) ~> @{}entry["交易日"]
@@ -270,8 +307,9 @@ view.init!
     google.maps.event.addListener @map, \bounds_changed, debounce ~>
       b = @map.getBounds!
       filter.bound = {}
-      lat = b.Ua or b.rb
-      lng = b.Ia or b.Ta
-      filter.bound.lat = min: lat.lo, max: lat.hi
-      filter.bound.lng = min: lng.lo, max: lng.hi
+      ne = b.getNorthEast!
+      sw = b.getSouthWest!
+      filter.bound <<<
+        lat: min: sw.lat!, max: ne.lat!
+        lng: min: sw.lng!, max: ne.lng!
       filter.render!
