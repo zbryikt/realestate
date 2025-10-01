@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx server -r web -o true"
+    "start": "npx server -r web -o true -p 62138"
   },
   "keywords": [],
   "author": "",
